@@ -304,7 +304,7 @@ final_df["snapshot_date"] = pd.Timestamp.now(tz="Australia/Melbourne").date()
 final_df["start_date_formatted_dt"] = pd.to_datetime(
     final_df["start_date_formatted"],
     errors="coerce",
-    dayfirst=True
+    dayfirst=False
 )
 
 pipeline_run_datetime = pd.Timestamp.now(tz="Australia/Melbourne").tz_localize(None)
@@ -368,16 +368,33 @@ print("CSV files exported successfully.")
 def clean_for_sheets(data):
     cleaned = data.copy()
 
+    # Convert list/dict values into text
     for col in cleaned.columns:
         cleaned[col] = cleaned[col].apply(
             lambda x: json.dumps(x, default=str) if isinstance(x, (list, dict)) else x
         )
 
+    # Replace invalid JSON values before sending to Google Sheets
+    cleaned = cleaned.replace([float("inf"), float("-inf")], "")
+
+    # Replace pandas/numpy missing values
+    cleaned = cleaned.where(pd.notnull(cleaned), "")
+
+    # Convert everything to string for safe Google Sheets upload
     cleaned = cleaned.astype(str)
-    cleaned = cleaned.replace({"NaT": "", "nan": "", "None": "", "<NA>": ""})
+
+    # Final cleanup
+    cleaned = cleaned.replace({
+        "NaT": "",
+        "nan": "",
+        "NaN": "",
+        "None": "",
+        "<NA>": "",
+        "inf": "",
+        "-inf": ""
+    })
 
     return cleaned
-
 
 def upload_to_google_sheets(final_data, dq_data):
     service_account_info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)

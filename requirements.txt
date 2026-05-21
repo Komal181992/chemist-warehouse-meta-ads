@@ -1,3 +1,4 @@
+apify-client
 pandas
 numpy
 requests

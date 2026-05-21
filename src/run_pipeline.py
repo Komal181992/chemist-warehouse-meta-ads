@@ -198,20 +198,35 @@ final_df = deduped_df[[col for col in final_cols if col in deduped_df.columns]].
 
 
 def clean_platforms(x):
-    if x is None or pd.isna(x):
+
+    # Handle None
+    if x is None:
         return None
 
+    # Handle lists directly
     if isinstance(x, list):
-        return ", ".join(x)
+        return ", ".join(map(str, x))
 
+    # Handle strings
     if isinstance(x, str):
+
         try:
             parsed = ast.literal_eval(x)
+
             if isinstance(parsed, list):
-                return ", ".join(parsed)
+                return ", ".join(map(str, parsed))
+
             return x
+
         except Exception:
             return x
+
+    # Handle NaN safely
+    try:
+        if pd.isna(x):
+            return None
+    except Exception:
+        pass
 
     return str(x)
 

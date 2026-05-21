@@ -27,7 +27,7 @@ if not runs:
     raise Exception(f"No runs found for actor ID: {ACTOR_ID}")
 
 last_run = runs[0]
-dataset_id = last_run["defaultDatasetId"]
+dataset_id = last_run.default_dataset_id
 
 items = list(client.dataset(dataset_id).iterate_items())
 

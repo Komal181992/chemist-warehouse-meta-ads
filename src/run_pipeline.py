@@ -9,7 +9,7 @@ Original file is located at
 
 import sys
 # Install the client in a separate step if needed
-!{sys.executable} -m pip install -q apify-client
+
 
 from apify_client import ApifyClient
 from google.colab import userdata

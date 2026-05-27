@@ -170,7 +170,9 @@ curated_df["funding_type_label"] = curated_df["funding_type"].replace({
     "o&o": "O&O",
     "oa": "O&O",
     "none":"None",
-    "":"None"
+    "":"None",
+    "<na>": "None",
+        "nan": "None"
 })
 
 curated_df["brand_label"] = curated_df["brand"].str.replace("-", " ", regex=False).str.title()
@@ -243,7 +245,14 @@ for platform in platforms:
         case=False,
         na=False
     )
-
+final_cols.extend([
+    "facebook",
+    "instagram",
+    "audience_network",
+    "messenger",
+    "threads",
+    "whatsapp"
+])
 
 def classify_page(path):
     if pd.isna(path):
@@ -380,7 +389,7 @@ def clean_for_sheets(data):
     cleaned = cleaned.replace([float("inf"), float("-inf")], "")
 
     # Replace pandas/numpy missing values
-    cleaned = cleaned.where(pd.notnull(cleaned), "")
+    cleaned = cleaned.where(pd.notnull(cleaned), "Not Specified")
 
     # Convert everything to string for safe Google Sheets upload
     cleaned = cleaned.astype(str)

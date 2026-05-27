@@ -164,16 +164,23 @@ for col in text_cols:
     if col in curated_df.columns:
         curated_df[col] = curated_df[col].astype(str).str.strip().str.lower()
 
-curated_df["funding_type_label"] = curated_df["funding_type"].replace({
-    "coop": "Coop",
-    "house": "House",
-    "o&o": "O&O",
-    "oa": "O&O",
-    "none":"None",
-    "":"None",
-    "<na>": "None",
-        "nan": "None"
-})
+curated_df["funding_type_label"] = (
+    curated_df["funding_type"]
+    .fillna("Not Specified")
+    .astype(str)
+    .str.strip()
+    .str.lower()
+    .replace({
+        "coop": "Coop",
+        "house": "House",
+        "o&o": "O&O",
+        "oa": "O&O",
+        "none": "Not Specified",
+        "nan": "Not Specified",
+        "<na>": "Not Specified",
+        "": "Not Specified"
+    })
+)
 
 curated_df["brand_label"] = curated_df["brand"].str.replace("-", " ", regex=False).str.title()
 curated_df["supplier_label"] = curated_df["supplier_entity"].str.replace("-", " ", regex=False).str.title()
@@ -237,7 +244,7 @@ def clean_platforms(x):
 
 final_df["publisher_platform_clean"] = final_df["publisher_platform"].apply(clean_platforms)
 
-platforms = ["FACEBOOK", "INSTAGRAM", "AUDIENCE_NETWORK", "MESSENGER", "THREADS","WHATSAPP"]
+platforms = ["FACEBOOK", "INSTAGRAM", "AUDIENCE_NETWORK", "MESSENGER", "THREADS", "WHATSAPP"]
 
 for platform in platforms:
     final_df[platform.lower()] = final_df["publisher_platform_clean"].str.contains(
@@ -245,14 +252,7 @@ for platform in platforms:
         case=False,
         na=False
     )
-final_cols.extend([
-    "facebook",
-    "instagram",
-    "audience_network",
-    "messenger",
-    "threads",
-    "whatsapp"
-])
+
 
 def classify_page(path):
     if pd.isna(path):
@@ -379,30 +379,26 @@ print("CSV files exported successfully.")
 def clean_for_sheets(data):
     cleaned = data.copy()
 
-    # Convert list/dict values into text
     for col in cleaned.columns:
         cleaned[col] = cleaned[col].apply(
             lambda x: json.dumps(x, default=str) if isinstance(x, (list, dict)) else x
         )
 
-    # Replace invalid JSON values before sending to Google Sheets
-    cleaned = cleaned.replace([float("inf"), float("-inf")], "")
+    cleaned = cleaned.replace([float("inf"), float("-inf")], pd.NA)
 
-    # Replace pandas/numpy missing values
+    # Replace real nulls
     cleaned = cleaned.where(pd.notnull(cleaned), "Not Specified")
 
-    # Convert everything to string for safe Google Sheets upload
     cleaned = cleaned.astype(str)
 
-    # Final cleanup
+    # Replace blank-like text values
     cleaned = cleaned.replace({
-        "NaT": "None",
-        "nan": "None",
-        "NaN": "None",
-        "<NA>": "None",
-        "":"None",
-        "inf": "",
-        "-inf": ""
+        "": "Not Specified",
+        "NaT": "Not Specified",
+        "nan": "Not Specified",
+        "NaN": "Not Specified",
+        "<NA>": "Not Specified",
+        "None": "Not Specified"
     })
 
     return cleaned

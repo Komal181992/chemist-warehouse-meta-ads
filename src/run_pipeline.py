@@ -13,7 +13,7 @@ APIFY_TOKEN = os.environ["APIFY_TOKEN"]
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]
 
 ACTOR_ID = "XtaWFhbtfxyzqrFmd"
-GOOGLE_SHEET_NAME = "Chemist Warehouse Meta Ads"
+GOOGLE_SHEET_NAME = "Chemist Warehouse Meta Ads Reporting"
 
 
 print("Pipeline started...")

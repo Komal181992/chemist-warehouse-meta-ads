@@ -207,6 +207,14 @@ final_cols = [
 
 final_df = deduped_df[[col for col in final_cols if col in deduped_df.columns]].copy()
 
+final_df["snapshot_week"] = pd.Timestamp.now(
+    tz="Australia/Melbourne"
+).strftime("%Y-W%U")
+
+final_df["snapshot_month"] = pd.Timestamp.now(
+    tz="Australia/Melbourne"
+).strftime("%Y-%m")
+
 
 def clean_platforms(x):
 
@@ -418,6 +426,8 @@ def upload_to_google_sheets(final_data, dq_data):
 
     gc = gspread.authorize(credentials)
 
+    print("UPDATING SHEET:", GOOGLE_SHEET_NAME)
+
     sheet = gc.open(GOOGLE_SHEET_NAME)
 
     final_ws = sheet.worksheet("Final_Data")
@@ -426,12 +436,18 @@ def upload_to_google_sheets(final_data, dq_data):
     final_clean = clean_for_sheets(final_data)
     dq_clean = clean_for_sheets(dq_data)
 
-    final_ws.clear()
-    dq_ws.clear()
+    # Get existing data
+    existing_data = final_ws.get_all_values()
 
-    final_ws.update(
-        [final_clean.columns.tolist()] + final_clean.values.tolist()
-    )
+    # Add headers only once
+    if not existing_data:
+        final_ws.append_row(final_clean.columns.tolist())
+
+    # Append weekly snapshot rows
+    final_ws.append_rows(final_clean.values.tolist())
+
+    # DQ sheet overwrite
+    dq_ws.clear()
 
     dq_ws.update(
         [dq_clean.columns.tolist()] + dq_clean.values.tolist()

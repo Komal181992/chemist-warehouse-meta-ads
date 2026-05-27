@@ -389,6 +389,7 @@ def clean_for_sheets(data):
         "nan": "None",
         "NaN": "None",
         "<NA>": "None",
+        "":"None",
         "inf": "",
         "-inf": ""
     })

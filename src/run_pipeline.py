@@ -385,10 +385,10 @@ def clean_for_sheets(data):
 
     # Final cleanup
     cleaned = cleaned.replace({
-        "NaT": "",
-        "nan": "",
-        "NaN": "",
-        "<NA>": "",
+        "NaT": "None",
+        "nan": "None",
+        "NaN": "None",
+        "<NA>": "None",
         "inf": "",
         "-inf": ""
     })

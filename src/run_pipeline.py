@@ -13,10 +13,9 @@ APIFY_TOKEN = os.environ["APIFY_TOKEN"]
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]
 
 ACTOR_ID = "XtaWFhbtfxyzqrFmd"
-GOOGLE_SHEET_NAME = "Chemist Warehouse Meta Ads Reporting"
+GOOGLE_SHEET_ID = "18e3Aa1ZrKwrD27aAas31NpLZm2tsa0w8V84kHUi6eVc"
 
 
-print("Pipeline started...")
 
 client = ApifyClient(APIFY_TOKEN)
 
@@ -426,9 +425,10 @@ def upload_to_google_sheets(final_data, dq_data):
 
     gc = gspread.authorize(credentials)
 
-    print("UPDATING SHEET:", GOOGLE_SHEET_NAME)
+    print("UPDATING SHEET ID:", GOOGLE_SHEET_ID)
 
-    sheet = gc.open(GOOGLE_SHEET_NAME)
+    # Open exact Google Sheet using ID
+    sheet = gc.open_by_key(GOOGLE_SHEET_ID)
 
     final_ws = sheet.worksheet("Final_Data")
     dq_ws = sheet.worksheet("DQ_Summary")
@@ -446,7 +446,7 @@ def upload_to_google_sheets(final_data, dq_data):
     # Append weekly snapshot rows
     final_ws.append_rows(final_clean.values.tolist())
 
-    # DQ sheet overwrite
+    # Overwrite DQ summary
     dq_ws.clear()
 
     dq_ws.update(
@@ -454,9 +454,10 @@ def upload_to_google_sheets(final_data, dq_data):
     )
 
     print("Google Sheets updated successfully.")
-    print("UPDATING SHEET:", GOOGLE_SHEET_NAME)
+
 
 
 upload_to_google_sheets(final_df, dq_summary)
+print("Pipeline completed successfully.")
 
 print("Pipeline completed successfully.")

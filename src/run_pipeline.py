@@ -168,7 +168,9 @@ curated_df["funding_type_label"] = curated_df["funding_type"].replace({
     "coop": "Coop",
     "house": "House",
     "o&o": "O&O",
-    "oa": "O&O"
+    "oa": "O&O",
+    "none":"None",
+    "":"None"
 })
 
 curated_df["brand_label"] = curated_df["brand"].str.replace("-", " ", regex=False).str.title()
@@ -233,7 +235,7 @@ def clean_platforms(x):
 
 final_df["publisher_platform_clean"] = final_df["publisher_platform"].apply(clean_platforms)
 
-platforms = ["FACEBOOK", "INSTAGRAM", "AUDIENCE_NETWORK", "MESSENGER", "THREADS"]
+platforms = ["FACEBOOK", "INSTAGRAM", "AUDIENCE_NETWORK", "MESSENGER", "THREADS","WHATSAPP"]
 
 for platform in platforms:
     final_df[platform.lower()] = final_df["publisher_platform_clean"].str.contains(

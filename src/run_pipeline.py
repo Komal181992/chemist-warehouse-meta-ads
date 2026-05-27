@@ -438,6 +438,7 @@ def upload_to_google_sheets(final_data, dq_data):
     )
 
     print("Google Sheets updated successfully.")
+    print("UPDATING SHEET:", GOOGLE_SHEET_NAME)
 
 
 upload_to_google_sheets(final_df, dq_summary)

@@ -440,8 +440,8 @@ def upload_to_google_sheets(final_data, dq_data):
     existing_data = final_ws.get_all_values()
 
     # Add headers only once
-    if not existing_data:
-        final_ws.append_row(final_clean.columns.tolist())
+   if len(existing_data) == 0:
+    final_ws.append_row(final_clean.columns.tolist())
 
     # Append weekly snapshot rows
     final_ws.append_rows(final_clean.values.tolist())

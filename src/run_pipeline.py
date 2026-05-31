@@ -378,8 +378,19 @@ if critical_failures > 0:
 
 os.makedirs("output", exist_ok=True)
 
-final_df.to_csv("output/meta_ads_final_updated.csv", index=False)
-dq_summary.to_csv("output/meta_ads_dq_summary.csv", index=False)
+week_str = pd.Timestamp.now(
+    tz="Australia/Melbourne"
+).strftime("%Y_W%U")
+
+final_df.to_csv(
+    f"output/meta_ads_final_{week_str}.csv",
+    index=False
+)
+
+dq_summary.to_csv(
+    f"output/meta_ads_dq_summary_{week_str}.csv",
+    index=False
+)
 
 print("CSV files exported successfully.")
 

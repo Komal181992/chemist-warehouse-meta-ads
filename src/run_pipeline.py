@@ -411,6 +411,7 @@ def clean_for_sheets(data):
     return cleaned
 
 def upload_to_google_sheets(final_data, dq_data):
+
     service_account_info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
 
     scopes = [
@@ -425,9 +426,6 @@ def upload_to_google_sheets(final_data, dq_data):
 
     gc = gspread.authorize(credentials)
 
-    print("UPDATING SHEET ID:", GOOGLE_SHEET_ID)
-
-    # Open exact Google Sheet using ID
     sheet = gc.open_by_key(GOOGLE_SHEET_ID)
 
     final_ws = sheet.worksheet("Final_Data")
@@ -436,17 +434,15 @@ def upload_to_google_sheets(final_data, dq_data):
     final_clean = clean_for_sheets(final_data)
     dq_clean = clean_for_sheets(dq_data)
 
-    # Get existing data
     existing_data = final_ws.get_all_values()
 
-    # Add headers only once
-   if len(existing_data) == 0:
-    final_ws.append_row(final_clean.columns.tolist())
+    # Add header only if sheet is empty
+    if len(existing_data) == 0:
+        final_ws.append_row(final_clean.columns.tolist())
 
-    # Append weekly snapshot rows
+    # Append data rows
     final_ws.append_rows(final_clean.values.tolist())
 
-    # Overwrite DQ summary
     dq_ws.clear()
 
     dq_ws.update(

@@ -434,16 +434,13 @@ def upload_to_google_sheets(final_data, dq_data):
     final_clean = clean_for_sheets(final_data)
     dq_clean = clean_for_sheets(dq_data)
 
-    existing_data = final_ws.get_all_values()
+existing_data = final_ws.get_all_values()
+first_row = existing_data[0] if existing_data else []
 
-    # Add header only if sheet is empty
-    if len(existing_data) == 0:
-        final_ws.append_row(final_clean.columns.tolist())
+if not first_row or all(str(cell).strip() == "" for cell in first_row):
+    final_ws.update("A1", [final_clean.columns.tolist()])
 
-    # Append data rows
-    final_ws.append_rows(final_clean.values.tolist())
-
-    dq_ws.clear()
+final_ws.append_rows(final_clean.values.tolist())
 
     dq_ws.update(
         [dq_clean.columns.tolist()] + dq_clean.values.tolist()

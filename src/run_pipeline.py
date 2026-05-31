@@ -177,6 +177,7 @@ curated_df["funding_type_label"] = (
         "none": "Not Specified",
         "nan": "Not Specified",
         "<na>": "Not Specified",
+        "not specified": "Not Specified",
         "": "Not Specified"
     })
 )

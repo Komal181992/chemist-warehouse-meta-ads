@@ -1,43 +1,41 @@
 name: CW Meta Ads Pipeline
 
 permissions:
-contents: write
+  contents: write
 
 on:
-workflow_dispatch:
+  workflow_dispatch:
 
-schedule:
-- cron: '0 2 * * 1'
+  schedule:
+    - cron: '0 2 * * 1'
 
 jobs:
-run-pipeline:
-runs-on: ubuntu-latest
+  run-pipeline:
+    runs-on: ubuntu-latest
 
-```
-env:
-  GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-  APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+    env:
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-  - name: Set up Python
-    uses: actions/setup-python@v6
-    with:
-      python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
 
-  - name: Install dependencies
-    run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-  - name: Run pipeline
-    run: python src/run_pipeline.py
+      - name: Run pipeline
+        run: python src/run_pipeline.py
 
-  - name: Commit CSV outputs
-    run: |
-      git config --global user.name "github-actions"
-      git config --global user.email "github-actions@github.com"
-      git add output/*.csv
-      git commit -m "Auto-update CSV outputs" || echo "No CSV changes to commit"
-      git push
-```
+      - name: Commit CSV outputs
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add output/*.csv
+          git commit -m "Auto-update CSV outputs" || echo "No CSV changes to commit"
+          git push

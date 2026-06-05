@@ -197,12 +197,15 @@ final_cols = [
     "snapshot.title", "snapshot.body.text",
     "snapshot.cta_text", "snapshot.display_format",
     "snapshot.link_url", "domain", "url_path",
-    "utm_source", "utm_medium", "utm_campaign",
+    "utm_source", "utm_medium", "utm_campaign","category_code","utm_term","utm_content",
     "funding_type_label", "supplier_label", "brand_label",
     "campaign_period", "creative_format",
     "card_title", "card_body", "card_cta_text",
     "card_image_url", "card_video_hd_url",
-    "publisher_platform"
+    "publisher_platform","country",
+"retailer",
+"platform",
+"channel",
 ]
 
 final_df = deduped_df[[col for col in final_cols if col in deduped_df.columns]].copy()
@@ -440,7 +443,15 @@ def upload_to_google_sheets(final_data, dq_data):
 
     sheet = gc.open_by_key(GOOGLE_SHEET_ID)
 
-    final_ws = sheet.worksheet("Final_Data")
+    try:
+        final_ws = sheet.worksheet("Final_Data_New")
+    except:
+        final_ws = sheet.add_worksheet(
+            title="Final_Data_New",
+            rows=10000,
+            cols=100
+        )
+
     dq_ws = sheet.worksheet("DQ_Summary")
 
     final_clean = clean_for_sheets(final_data)
@@ -449,16 +460,12 @@ def upload_to_google_sheets(final_data, dq_data):
     existing_data = final_ws.get_all_values()
     first_row = existing_data[0] if existing_data else []
 
-    # Add headers only if first row empty
     if not first_row or all(str(cell).strip() == "" for cell in first_row):
         final_ws.update("A1", [final_clean.columns.tolist()])
 
-    # Append data rows
     final_ws.append_rows(final_clean.values.tolist())
 
-    # Refresh DQ summary
     dq_ws.clear()
-
     dq_ws.update(
         [dq_clean.columns.tolist()] + dq_clean.values.tolist()
     )

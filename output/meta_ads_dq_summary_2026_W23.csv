@@ -1,6 +1,6 @@
 dq_check,failed_records,total_records,failure_rate_pct,pipeline_run_datetime
-duplicate_ad_archive_id,0,30,0.0,2026-06-08 14:23:54.405876
-missing_page_name,0,30,0.0,2026-06-08 14:23:54.405876
-invalid_start_date,0,30,0.0,2026-06-08 14:23:54.405876
-future_start_date,0,30,0.0,2026-06-08 14:23:54.405876
-blank_creative_text,0,30,0.0,2026-06-08 14:23:54.405876
+duplicate_ad_archive_id,0,30,0.0,2026-06-08 16:39:17.769962
+missing_page_name,0,30,0.0,2026-06-08 16:39:17.769962
+invalid_start_date,0,30,0.0,2026-06-08 16:39:17.769962
+future_start_date,0,30,0.0,2026-06-08 16:39:17.769962
+blank_creative_text,0,30,0.0,2026-06-08 16:39:17.769962

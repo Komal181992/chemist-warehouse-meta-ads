@@ -1,0 +1,6 @@
+dq_check,failed_records,total_records,failure_rate_pct,pipeline_run_datetime
+duplicate_ad_archive_id,0,683,0.0,2026-06-22 17:19:02.942248
+missing_page_name,0,683,0.0,2026-06-22 17:19:02.942248
+invalid_start_date,0,683,0.0,2026-06-22 17:19:02.942248
+future_start_date,0,683,0.0,2026-06-22 17:19:02.942248
+blank_creative_text,0,683,0.0,2026-06-22 17:19:02.942248
